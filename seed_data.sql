@@ -13,7 +13,7 @@ VALUES
     ('Arnold Barney-Matthews', '0234112334');
 
 /* See Query 1 in queries.sql
- Show zoo_keeper.keeper_id and zoo_keeper.full_name
+ Select zoo_keeper.keeper_id and zoo_keeper.full_name
  before inserting data into id_badge table
  keeper_id is a PK,FK in id_badge */
 
@@ -25,8 +25,8 @@ VALUES
     (3, '2025-06-05', '2026-06-04');
 
 /* See Query 2 in queries.sql
- Show species.species_id before inserting data into big_cat
- species_id is a FK in big_cat table */
+ Show species.species_id before inserting data,
+ big_cat.species_id is a FK in big_cat table */
 
 -- big_cat seed data
 INSERT INTO big_cat (name, gender, species_id)
@@ -37,7 +37,7 @@ VALUES
     ('Rojo', 'F', 3);
 
 /* See Query 3 in queries.sql
- Show big_cat.cat_id, big_cat.name before inserting feeding log data
+ Show big_cat.cat_id, big_cat.name before inserting feeding_log seed data
  zoo_keeper.keeper_id (query 1) and big_cat.cat_id are FK in feeding_log table */
 
 -- feeding_log seed data

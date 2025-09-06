@@ -21,7 +21,7 @@ CREATE TABLE zoo_keeper (
 /* default value for table 2: zoo_keeper
  When a keeper leaves, the default value replaces keeper data in table 5: feeding_log
  Important! Ensures feeding log entries are not deleted when a keeper is deleted. */
-INSERT INTO zoo_keeper(keeper_id, full_name, contact_number)
+INSERT INTO zoo_keeper (keeper_id, full_name, contact_number)
 VALUES (0, 'Past Keeper', '0000000000');
 
 -- table 3: id_badge
@@ -29,7 +29,8 @@ CREATE TABLE id_badge (
     keeper_id INTEGER PRIMARY KEY,
     issue_date DATE NOT NULL,
     expiry_date DATE NOT NULL,
-    FOREIGN KEY (keeper_id) REFERENCES zoo_keeper(keeper_id) ON DELETE CASCADE
+    FOREIGN KEY (keeper_id) REFERENCES zoo_keeper(keeper_id) ON DELETE CASCADE,
+    CHECK (expiry_date > issue_date) -- data integrity check, ensures expiry date is always after issue date
 );
 
 CREATE TYPE gender AS ENUM ('M', 'F'); -- gender for table 4: big_cat
@@ -50,8 +51,8 @@ CREATE TABLE feeding_log (
     cat_id INTEGER NOT NULL,
     date DATE NOT NULL,
     meat_type VARCHAR(10) NOT NULL,
-    qty_kg DECIMAL(4, 2),
+    qty_kg DECIMAL(4, 2) NOT NULL,
     FOREIGN KEY (keeper_id) REFERENCES zoo_keeper(keeper_id) ON DELETE SET DEFAULT,
     FOREIGN KEY (cat_id) REFERENCES big_cat(cat_id) ON DELETE CASCADE,
-    UNIQUE (cat_id, date)
+    UNIQUE (cat_id, date) -- no duplicates, one big cat is feed once per day but not everyday
 );

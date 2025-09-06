@@ -1,20 +1,19 @@
 /* Query 1: What are the names and id numbers for the zoo keepers?*/
-SELECT keeper_id, full_name
-    FROM zoo_keeper;
+SELECT keeper_id, full_name FROM zoo_keeper;
 
 -- Query 2: What ID number is linked to what species?
 SELECT * FROM species;
 
--- Query 3: What are the cats names and id numbers?
+-- Query 3: What are the big cat names and id numbers?
 SELECT cat_id, name FROM big_cat;
 
 -- Query 4: What species is species_id 2?
-SELECT common_name AS "Species with species_id 2"
+SELECT common_name AS "Species_id 2"
 FROM species
 WHERE species_id = 2;
 
 -- Query 5: Whose ID badge will expire first?
-SELECT zk.full_name AS "Keeper with Earliest ID Badge Expiry"
+SELECT zk.full_name AS "Earliest id badge expiry"
 FROM zoo_keeper zk
 JOIN id_badge ib ON zk.keeper_id = ib.keeper_id -- join on PK,FK relationship
 GROUP BY zk.full_name, ib.expiry_date -- grouping by both because HAVING clause for aggregate function
@@ -41,9 +40,8 @@ UPDATE zoo_keeper
 SET contact_number = '0234555333'
 WHERE full_name = 'Millie Thomas';
 
-/* Query 8: Arnold got a new job! The zoo no longer needs to keep his info on file.
-The zoo manager needs to delete all records for Arnold but he can't remember his last name.
-It starts with a B and has an M in there too. */
+/* Query 8: Arnold got a new job! The zoo manager needs to delete all records
+ for Arnold but he can't remember his last name. It starts with a B and has an M in there too. */
 DELETE FROM zoo_keeper
 WHERE full_name LIKE 'Arnold B%M%';
 
@@ -62,7 +60,7 @@ GROUP BY bc.name, bc.gender, s.common_name
 HAVING SUM(fl.qty_kg) > 25;
 
 -- Query 10: On average how much of each 'meat type' does Rojo eat per week?
-SELECT fl.meat_type AS "Rojo eats", ROUND(AVG(fl.qty_kg), 2) AS "Avg kg/per week"
+SELECT fl.meat_type AS "Rojo's meats", ROUND(AVG(fl.qty_kg), 2) AS "Avg kg/per week"
 FROM big_cat bc
 JOIN feeding_log fl ON bc.cat_id = fl.cat_id
 WHERE bc.name = 'Rojo' AND fl.date BETWEEN '2025-08-01' AND '2025-08-07'
@@ -72,7 +70,13 @@ GROUP BY bc.name, fl.meat_type;
 SELECT * FROM feeding_log
 WHERE qty_kg = (SELECT MAX(qty_kg) FROM feeding_log);
 
--- Query 12: What is the average amount of meat per feeding, per species and gender?
+/* Query 12: There's a new cat in town! She's a Snow Leopard named Muri.
+ Enter her details into the big cat database. Run Query 2 again to check her species_id. */
+
+INSERT INTO big_cat (name, gender, species_id)
+VALUES ('Muri', 'F', 3);
+
+-- Query 13: In one feeding, what is the average amount of meat eaten per species and gender?
 SELECT s.common_name AS "Species", bc.gender, ROUND(AVG(fl.qty_kg), 2) AS "Avg qty of meat per feeding (kg)"
 FROM species s
 JOIN big_cat bc ON s.species_id = bc.species_id
@@ -80,4 +84,4 @@ JOIN feeding_log fl ON bc.cat_id = fl.cat_id
 GROUP BY s.common_name, bc.gender
 ORDER BY AVG(fl.qty_kg) DESC;
 
--- Query 13: What meat type is most frequently fed to each species? What is the total quantity?
+-- Query 14: What meat type is most frequently fed to each species? Order by total weight.
